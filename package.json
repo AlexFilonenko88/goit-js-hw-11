@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "homepage": "https://alexfilonenko88.github.io/goit-js-hw-11/",
   "scripts": {
     "build": "parcel build src/*.html --public-url /goit-js-hw-11//"
   },
@@ -15,6 +16,5 @@
   "bugs": {
     "url": "https://github.com/AlexFilonenko88/goit-js-hw-11/issues"
   },
-  "homepage": "https://alexfilonenko88.github.io/goit-js-hw-11/",
   "keywords": []
 }
