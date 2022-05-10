@@ -20,5 +20,8 @@
   },
   "dependencies": {
     "parcel-plugin-nuke-dist": "^1.0.1"
+  },
+  "devDependencies": {
+    "posthtml-include": "^1.7.3"
   }
 }
