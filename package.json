@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AlexFilonenko88/goit-js-hw-11.git"
+    "url": "git+https://github.com/alexfilonenko88/goit-js-hw-11.git"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "url": "https://alexfilonenko88.github.io/goit-js-hw-11/issues"
   },
   "dependencies": {
+    "parcel": "^2.5.0",
     "parcel-plugin-nuke-dist": "^1.0.1"
   },
   "devDependencies": {
