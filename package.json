@@ -1,0 +1,20 @@
+{
+  "name": "goit-js-hw-11",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "homepage": "https://alexfilonenko88.github.io/goit-js-hw-11/",
+  "scripts": {
+    "build": "parcel build src/*.html --public-url /goit-js-hw-11/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexFilonenko88/goit-js-hw-11.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexFilonenko88/goit-js-hw-11/issues"
+  },
+  "keywords": []
+}
