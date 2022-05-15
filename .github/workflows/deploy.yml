@@ -13,9 +13,11 @@ jobs:
 
       - name: Install and Build 🔧
         run: |
+          npm ci
           npm run build
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.0
         with:
+          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
           folder: dist
