@@ -2,49 +2,74 @@
 import SimpleLightbox from 'simplelightbox';
 // Дополнительный импорт стилей
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import API from './fetchapi';
+import '../css/styles.css';
+import { Notify } from "notiflix/build/notiflix-notify-aio";
 
 const form = document.querySelector(".search-form");
 const gallery = document.querySelector(".gallery");
 const button = document.querySelector(".load-more");
+const dataJson = new API();
+
 
 form.addEventListener("submit", onSubmit);
 button.addEventListener("click", onLoadMore);
 
+button.setAttribute("disabled", true);
+
 const lightBox = new SimpleLightbox(".gallery a", { loop: true, enableKeyboard: true, docClose: true, });
-const URL = 'https://pixabay.com/api/';
-const KEY = '27405917-f8453a95813591a24f9d89c32';
-// let inp = '';
-// let page = 1;
-const value = { input: '', page: 1, };
 
-const searchParams = new URLSearchParams({
-    image_type: 'photo',
-    orientation: 'horizontal',
-    safesearch: 'true',
-    page: `${value.page}`,
-    per_page: 40,
-});
-
-console.log(searchParams);
+async function getFetch() {
+    const parseData = await dataJson.onFetch()
+    const markUp = await renderMarkUp(parseData)
+    const render = await onRender(markUp)
+    return render;
+};
 
 function onSubmit(e) {
     e.preventDefault();
-    value.page = 1;
+    button.removeAttribute("disabled");
+    dataJson.query = e.currentTarget.elements.searchQuery.value.trim();
+    if (dataJson.query === '') {
+        button.setAttribute("disabled", true);
+        return Notify.warning("Please enter your request");
+    }
+
     onClear();
-    value.input = e.currentTarget.elements.searchQuery.value;
-    onFetch(value.input);
+    dataJson.resetPage();
+    try {
+        dataJson.onFetch()
+            .then((object) => {
+                checkResponse(object);
+                return renderMarkUp(object);
+            })
+        .then(onRender)
+    } catch {
+        onError();
+    }
 };
 
-function onFetch(inp) {
-    return fetch(`${URL}?key=${KEY}&q=${inp}&${searchParams}`)
-        .then(r => r.json())
-        .then(data => data.hits)
-        .then(renderMarkUp)
-        .then(onRender);
-};
+function checkEndOfResult(object) {
+    if (object.hits.length < dataJson.per_page) {
+        console.log(dataJson.per_page);
+        button.setAttribute("disabled", true);
+        return Notify.info('We`re sorry, but you`ve reached the end of search results.');
+    }
+}
+
+function checkResponse (object) {
+    if (object.total === 0) {
+        button.setAttribute("disabled", true);
+        return Notify.failure("Sorry, there are no images matching your search query. Please try again.")
+    }
+    button.removeAttribute("disabled");
+    Notify.success(`Hooray! We found ${object.totalHits} images.`);
+    checkEndOfResult(object);
+}
+
 
 function renderMarkUp(markup) {
-    return markup.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
+    return markup.hits.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
         return `<a class="gallery__item" href="${largeImageURL}">
         <div class="photo-card">
         <img src="${webformatURL}" alt="${tags}" loading="lazy" />
@@ -77,10 +102,15 @@ function onClear() {
 };
 
 function onLoadMore() {
-    incrementPage();
-    onFetch(value.input);
+        dataJson.onFetch()
+            .then((object) => {
+                checkEndOfResult(object);
+                return renderMarkUp(object);
+            })
+        .then(onRender)
 };
 
-function incrementPage() {
-    value.page += 1;
-}
+function onError() {
+    button.setAttribute("disabled", true);
+    return Notify.failure("Oops, that went wrong. Please try again later");
+};
